@@ -1,0 +1,7 @@
+pidgin-autocomplete-model/
+*.safetensors
+
+pidgin-autocomplete-model/
+*.safetensors
+__pycache__/
+.env
