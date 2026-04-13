@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pidgin Autocomplete/Text Prediction System</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 40px;
+        }
+        input {
+            width: 400px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .suggestions {
+            margin-top: 10px;
+        }
+        .suggestion {
+            display: inline-block;
+            background: #eee;
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Pidgin Autocomplete</h2>
+
+<input type="text" id="inputBox" placeholder="Type something..." oninput="getSuggestions()" />
+
+<div class="suggestions" id="suggestions"></div>
+
+<script>
+async function getSuggestions() {
+    const text = document.getElementById("inputBox").value;
+
+    if (text.length === 0) {
+        document.getElementById("suggestions").innerHTML = "";
+        return;
+    }
+
+    const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text: text })
+    });
+
+    const data = await response.json();
+
+    const suggestionsDiv = document.getElementById("suggestions");
+    suggestionsDiv.innerHTML = "";
+
+    data.suggestions.forEach(word => {
+        const span = document.createElement("span");
+        span.className = "suggestion";
+        span.innerText = word;
+
+        span.onclick = () => {
+            document.getElementById("inputBox").value += " " + word;
+            getSuggestions();
+        };
+
+        suggestionsDiv.appendChild(span);
+    });
+}
+</script>
+
+</body>
+</html>

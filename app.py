@@ -5,10 +5,23 @@ import torch
 
 app = FastAPI()
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 MODEL_PATH = "pidgin-autocomplete-model"
 
-tokenizer = GPT2TokenizerFast.from_pretrained(MODEL_PATH)
-model = GPT2LMHeadModel.from_pretrained(MODEL_PATH)
+MODEL_NAME = "Ugochief/GPT2_pidgin_autocomplete"
+
+tokenizer = GPT2TokenizerFast.from_pretrained(MODEL_NAME)
+model = GPT2LMHeadModel.from_pretrained(MODEL_NAME)
+
 model.eval()
 
 class Request(BaseModel):
